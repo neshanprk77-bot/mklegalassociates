@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MK Legal Associates - Expert Legal Counsel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .hero-bg {
+            background-color: #111827;
+            background-image: linear-gradient(135deg, #111827 0%, #1f2937 50%, #374151 100%);
+        }
+        .section-title {
+            position: relative;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: #ca8a04; /* gold color */
+        }
+        .practice-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .practice-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .team-card {
+            transition: all 0.3s ease;
+        }
+        .team-card .team-socials {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        .team-card:hover .team-socials {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .stat-item {
+            border-left: 3px solid #ca8a04;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ca8a04;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .mobile-menu {
+            transition: transform 0.3s ease-in-out;
+        }
+        .menu-open {
+            transform: translateX(0);
+        }
+        .menu-closed {
+            transform: translateX(-100%);
+        }
+        /* Gemini AI Assistant Styles */
+        #ai-fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+        }
+        #ai-modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            -webkit-animation: fadeIn 0.3s;
+            animation: fadeIn 0.3s;
+        }
+        .modal-content {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            margin: 2rem;
+            background-color: #fefefe;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            -webkit-animation: slideInUp 0.3s;
+            animation: slideInUp 0.3s;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #ca8a04;
+            width: 30px;
+            height: 30px;
+            -webkit-animation: spin 1s linear infinite;
+            animation: spin 1s linear infinite;
+        }
+        @-webkit-keyframes spin {
+          0% { -webkit-transform: rotate(0deg); }
+          100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        @-webkit-keyframes fadeIn {
+          from {opacity: 0}
+          to {opacity: 1}
+        }
+        @keyframes fadeIn {
+          from {opacity: 0}
+          to {opacity: 1}
+        }
+        @-webkit-keyframes slideInUp {
+          from {bottom: -100px; opacity: 0}
+          to {bottom: 0; opacity: 1}
+        }
+        @keyframes slideInUp {
+            from {transform: translateY(100px); opacity: 0}
+            to {transform: translateY(0); opacity: 1}
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header & Navigation -->
+    <header class="bg-gray-900 text-white fixed w-full z-30 shadow-lg">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-white tracking-wider">
+                MK Legal <span class="text-yellow-600">Associates</span>
+            </a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#about" class="nav-link hover:text-yellow-500">About Us</a>
+                <a href="#practice-areas" class="nav-link hover:text-yellow-500">Practice Areas</a>
+                <a href="#team" class="nav-link hover:text-yellow-500">Our Team</a>
+                <a href="#contact" class="nav-link hover:text-yellow-500">Contact</a>
+            </nav>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-white focus:outline-none">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu menu-closed fixed inset-0 bg-gray-900 bg-opacity-95 z-40 md:hidden">
+        <div class="flex justify-end p-6">
+            <button id="close-btn" class="text-white focus:outline-none">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <nav class="flex flex-col items-center justify-center h-full space-y-8">
+            <a href="#about" class="text-2xl text-white hover:text-yellow-500 mobile-nav-link">About Us</a>
+            <a href="#practice-areas" class="text-2xl text-white hover:text-yellow-500 mobile-nav-link">Practice Areas</a>
+            <a href="#team" class="text-2xl text-white hover:text-yellow-500 mobile-nav-link">Our Team</a>
+            <a href="#contact" class="text-2xl text-white hover:text-yellow-500 mobile-nav-link">Contact</a>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <main>
+        <section class="hero-bg text-white pt-32 pb-20 md:pt-40 md:pb-28">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4 animate-fade-in-down">Dedicated Counsel, Resolute Representation</h1>
+                <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-8 animate-fade-in-up">
+                    Expert legal advice and strong representation. We are committed to navigating your legal journey to achieve favorable outcomes.
+                </p>
+                <a href="#contact" class="bg-yellow-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-yellow-700 transition duration-300 ease-in-out transform hover:scale-105 inline-block">
+                    Get in Touch
+                </a>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section id="about" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="section-title text-3xl md:text-4xl font-bold text-gray-800">Welcome to MK Legal Associates</h2>
+                </div>
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/2">
+                        <img src="https://placehold.co/600x400/1f2937/ca8a04?text=MK+Legal" alt="Law firm office interior" class="rounded-lg shadow-2xl w-full">
+                    </div>
+                    <div class="md:w-1/2">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Integrity, Dedication, and Client-Focus</h3>
+                        <p class="text-gray-600 mb-4 leading-relaxed">
+                            We are a dedicated legal firm committed to providing expert legal advice and strong representation. With integrity and a focus on our clients, we work diligently in all our key practice areas to ensure the best possible results.
+                        </p>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                           Our team is committed to understanding your unique challenges and goals, offering tailored strategies that are both innovative and effective. We believe in building lasting relationships based on trust, transparency, and exceptional results, guiding you through every step of your legal journey.
+                        </p>
+                        <div class="flex flex-wrap gap-8">
+                            <div class="stat-item pl-4">
+                                <span class="text-3xl font-bold text-yellow-600 block">13+</span>
+                                <span class="text-gray-600">Years of Experience</span>
+                            </div>
+                            <div class="stat-item pl-4">
+                                <span class="text-3xl font-bold text-yellow-600 block">500+</span>
+                                <span class="text-gray-600">Successful Case Disposals</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Practice Areas Section -->
+        <section id="practice-areas" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="section-title text-3xl md:text-4xl font-bold text-gray-800">Our Expertise</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto mt-4">We offer comprehensive legal services across a wide spectrum of practice areas, ensuring expert guidance at every step.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Card 1 -->
+                    <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="shield-off" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Bankruptcy Representation</h4>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="scale" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Civil Litigation</h4>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="file-signature" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Contracts & Agreements</h4>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="briefcase" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Corporate Litigation</h4>
+                    </div>
+                    <!-- Card 5 -->
+                    <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="shield" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Criminal Defence</h4>
+                    </div>
+                    <!-- Card 6 -->
+                    <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="gavel" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Criminal Litigation</h4>
+                    </div>
+                    <!-- Card 7 -->
+                    <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="heart-crack" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Divorce Litigation</h4>
+                    </div>
+                     <!-- Card 8 -->
+                     <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="factory" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Industrial Disputes</h4>
+                    </div>
+                    <!-- Card 9 -->
+                    <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="users" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Employment Litigation</h4>
+                    </div>
+                    <!-- Card 10 -->
+                    <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="hard-hat" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Labour Litigation</h4>
+                    </div>
+                    <!-- Card 11 -->
+                    <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="messages-square" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Legal Advice</h4>
+                    </div>
+                    <!-- Card 12 -->
+                    <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="home" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Property Litigation</h4>
+                    </div>
+                     <!-- Card 13 -->
+                     <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="file-check-2" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">Property Title Services</h4>
+                    </div>
+                     <!-- Card 14 -->
+                     <div class="practice-card bg-white p-6 rounded-lg shadow-md text-center">
+                        <div class="p-4 bg-yellow-100 rounded-full inline-block mb-4">
+                            <i data-lucide="swords" class="w-8 h-8 text-yellow-700"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2">General Litigation</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Team Section -->
+        <section id="team" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="section-title text-3xl md:text-4xl font-bold text-gray-800">Meet Our Experts</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto mt-4">A team of dedicated professionals committed to upholding the highest standards of legal practice.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 justify-items-center">
+                    <!-- Team Member 1 -->
+                    <div class="team-card text-center group">
+                        <div class="relative">
+                           <a href="https://ibb.co/yF4rBSR6"><img src="https://i.ibb.co/1GzkJ6nr/mk.jpg" alt="mk" border="0"></a>
+                           <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
+                               <div class="team-socials space-x-4">
+                                   <a href="#" class="text-white hover:text-yellow-500"><i data-lucide="linkedin" class="w-6 h-6"></i></a>
+                                   <a href="mailto:karunagaran.mano@gmail.com" class="text-white hover:text-yellow-500"><i data-lucide="mail" class="w-6 h-6"></i></a>
+                               </div>
+                           </div>
+                        </div>
+                        <h4 class="text-xl font-semibold">M.KARUNAGARAN, B.Sc., LL.B.,</h4>
+                        <p class="text-yellow-600">Managing Head</p>
+                    </div>
+                    <!-- Team Member 2 -->
+                    <div class="team-card text-center group">
+                         <div class="relative">
+                          <a href="https://ibb.co/Y6grTmr"><img src="https://i.ibb.co/bxtfRTf/mrk2.png" alt="mrk2" border="0"></a>
+                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
+                               <div class="team-socials space-x-4">
+                                   <a href="#" class="text-white hover:text-yellow-500"><i data-lucide="linkedin" class="w-6 h-6"></i></a>
+                                   <a href="#" class="text-white hover:text-yellow-500"><i data-lucide="mail" class="w-6 h-6"></i></a>
+                               </div>
+                           </div>
+                        </div>
+                        <h4 class="text-xl font-semibold">M.RAMESH KUMAR, B.E., LL.B.,</h4>
+                        <p class="text-yellow-600">Senior Associate</p>
+                    </div>
+                    <!-- Team Member 3 -->
+                    <div class="team-card text-center group">
+                        <div class="relative">
+                           <a href="https://ibb.co/W4v30dD7"><img src="https://i.ibb.co/4nRf2DsC/Whats-App-Image-2025-10-02-at-22-07-33-d9932133.png" alt="Whats-App-Image-2025-10-02-at-22-07-33-d9932133" border="0"></a>
+                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
+                               <div class="team-socials space-x-4">
+                                   <a href="#" class="text-white hover:text-yellow-500"><i data-lucide="linkedin" class="w-6 h-6"></i></a>
+                                   <a href="#" class="text-white hover:text-yellow-500"><i data-lucide="mail" class="w-6 h-6"></i></a>
+                               </div>
+                           </div>
+                        </div>
+                        <h4 class="text-xl font-semibold">P. VINOTH RAJ, B.Com., LL.B.,</h4>
+                        <p class="text-yellow-600">Senior Associate</p>
+                    </div>
+                    <!-- Team Member 4 -->
+                    <div class="team-card text-center group">
+                        <div class="relative">
+                           <a href="https://ibb.co/Tq7pw8wH"><img src="https://i.ibb.co/3YjGTNT0/kiran.jpg" alt="kiran" border="0"></a>
+                           <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
+                               <div class="team-socials space-x-4">
+                                   <a href="#" class="text-white hover:text-yellow-500"><i data-lucide="linkedin" class="w-6 h-6"></i></a>
+                                   <a href="#" class="text-white hover:text-yellow-500"><i data-lucide="mail" class="w-6 h-6"></i></a>
+                               </div>
+                           </div>
+                        </div>
+                        <h4 class="text-xl font-semibold">D. KIRAN KUMAR, B.A., LL.B.,</h4>
+                        <p class="text-yellow-600">Jr Associate</p>
+                    </div>
+                    <!-- Team Member 5 -->
+                    <div class="team-card text-center group">
+                        <div class="relative">
+                           <a href="https://ibb.co/BK3XYSJW"><img src="https://i.ibb.co/Z1Xnbkr4/np.jpg" alt="np" border="0"></a>
+                           <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
+                               <div class="team-socials space-x-4">
+                                   <a href="#" class="text-white hover:text-yellow-500"><i data-lucide="linkedin" class="w-6 h-6"></i></a>
+                                   <a href="#" class="text-white hover:text-yellow-500"><i data-lucide="mail" class="w-6 h-6"></i></a>
+                               </div>
+                           </div>
+                        </div>
+                        <h4 class="text-xl font-semibold">P. NESHAN RAJ, B.A., LL.B., LL.M.,</h4>
+                        <p class="text-yellow-600">Jr Associate</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 bg-gray-900 text-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="section-title text-3xl md:text-4xl font-bold">Get In Touch</h2>
+                    <p class="text-gray-300 max-w-2xl mx-auto mt-4">We are ready to listen. Reach out to us for a confidential consultation to discuss your legal needs.</p>
+                </div>
+                <div class="max-w-4xl mx-auto text-center">
+                    <a href="https://forms.gle/3vUMKuUTaKpvPsbp6" target="_blank" rel="noopener noreferrer" class="bg-yellow-600 text-white font-bold py-4 px-12 rounded-lg hover:bg-yellow-700 transition duration-300 ease-in-out transform hover:scale-105 inline-block text-lg">
+                        Contact Us for a Consultation
+                    </a>
+                    <div class="mt-12 text-gray-300">
+                        <p class="text-lg">You can also reach us directly:</p>
+                        <p class="mt-4"><span class="font-semibold">Phone:</span> +91 94430 40309 / +91 63827 13622</p>
+                        <p class="mt-2"><span class="font-semibold">Email:</span> karunagaran.mano@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Gemini AI Assistant Floating Action Button -->
+    <button id="ai-fab" class="bg-yellow-600 text-white p-4 rounded-full shadow-lg hover:bg-yellow-700 transition transform hover:scale-110">
+        <i data-lucide="message-circle" class="w-8 h-8"></i>
+    </button>
+
+    <!-- Gemini AI Assistant Modal -->
+    <div id="ai-modal" class="hidden">
+        <div class="modal-content text-gray-800">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h3 class="text-xl font-bold">✨ AI Legal Assistant (Beta)</h3>
+                <button id="ai-modal-close" class="text-gray-500 hover:text-gray-800">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-3 rounded-md mb-4" role="alert">
+                    <p class="text-sm"><strong>Disclaimer:</strong> This tool provides general information for educational purposes only and is not a substitute for professional legal advice. Please consult with one of our lawyers for your specific case.</p>
+                </div>
+                <form id="ai-form">
+                    <label for="ai-query" class="block font-semibold mb-2">Ask a legal question:</label>
+                    <textarea id="ai-query" rows="4" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="E.g., What are the first steps in a civil lawsuit?"></textarea>
+                    <button type="submit" class="w-full bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-yellow-700 transition duration-300 mt-3">
+                        Submit
+                    </button>
+                </form>
+                <div id="ai-response-container" class="mt-4">
+                    <div id="ai-loader" class="hidden flex justify-center items-center">
+                        <div class="loader"></div>
+                    </div>
+                    <div id="ai-response" class="bg-gray-100 p-3 rounded-md text-sm whitespace-pre-wrap"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300">
+        <div class="container mx-auto px-6 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">MK Legal Associates</h4>
+                    <p class="text-sm">Providing expert legal counsel for a complex world. Our commitment is to our clients' success.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#about" class="hover:text-yellow-500">About Us</a></li>
+                        <li><a href="#practice-areas" class="hover:text-yellow-500">Practice Areas</a></li>
+                        <li><a href="#team" class="hover:text-yellow-500">Our Team</a></li>
+                        <li><a href="#" class="hover:text-yellow-500">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Contact Info</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start"><i data-lucide="map-pin" class="w-4 h-4 mr-3 mt-1 text-yellow-500"></i><span>No.184, Azhad Road,Thorapadi, Vellore, Tamil Nadu 632002.
+                         Map link -https://maps.app.goo.gl/cnh9w6BDfbnepuG37.</span></li>
+                         <li class="flex items-start"><i data-lucide="phone" class="w-4 h-4 mr-3 mt-1 text-yellow-500"></i><span>+91 94430 40309 / +91 63827 13622</span></li>
+                         <li class="flex items-start"><i data-lucide="mail" class="w-4 h-4 mr-3 mt-1 text-yellow-500"></i><span>karunagaran.mano@gmail.com</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm">
+                <p>&copy; 2025 MK Legal Associates. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Mobile menu functionality
+        const menuBtn = document.getElementById('menu-btn');
+        const closeBtn = document.getElementById('close-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('menu-closed');
+            mobileMenu.classList.add('menu-open');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('menu-closed');
+            mobileMenu.classList.remove('menu-open');
+        });
+        
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('menu-closed');
+                mobileMenu.classList.remove('menu-open');
+            });
+        });
+
+        // Add scroll-based animations for a more dynamic feel
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in-up');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('section > div').forEach(sectionDiv => {
+            observer.observe(sectionDiv);
+        });
+
+        // Add animation classes to tailwind config (or just use style tag if not possible)
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeInDown {
+                from { opacity: 0; transform: translateY(-20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fade-in-down {
+                animation: fadeInDown 0.8s ease-out forwards;
+            }
+            @keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fade-in-up {
+                opacity: 0; /* Start hidden */
+                animation: fadeInUp 0.8s ease-out forwards;
+                animation-delay: 0.2s;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Gemini AI Assistant Logic
+        const aiFab = document.getElementById('ai-fab');
+        const aiModal = document.getElementById('ai-modal');
+        const aiModalClose = document.getElementById('ai-modal-close');
+        const aiForm = document.getElementById('ai-form');
+        const aiQueryInput = document.getElementById('ai-query');
+        const aiResponseEl = document.getElementById('ai-response');
+        const aiLoader = document.getElementById('ai-loader');
+
+        aiFab.addEventListener('click', () => {
+            aiModal.style.display = 'block';
+        });
+
+        aiModalClose.addEventListener('click', () => {
+            aiModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target == aiModal) {
+                aiModal.style.display = 'none';
+            }
+        });
+
+        aiForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userQuery = aiQueryInput.value.trim();
+            if (!userQuery) return;
+
+            aiResponseEl.textContent = '';
+            aiLoader.style.display = 'flex';
+            
+            try {
+                const responseText = await callGeminiApiWithRetry(userQuery);
+                aiResponseEl.textContent = responseText;
+            } catch (error) {
+                console.error("Error fetching from Gemini API:", error);
+                aiResponseEl.textContent = "Sorry, we couldn't process your request at this time. Please try again later.";
+            } finally {
+                aiLoader.style.display = 'none';
+            }
+        });
+        
+        async function callGeminiApi(userQuery) {
+            const systemPrompt = "You are a helpful legal information assistant for MK Legal Associates, a law firm in Vellore, India. Your purpose is to provide general, educational information about Indian law. You must always include a clear and strong disclaimer that your response is not legal advice and the user should consult a qualified lawyer for their specific situation. Your tone should be professional, empathetic, and easy to understand for a non-lawyer. Do not answer questions outside the scope of legal information. If asked for an opinion or advice, you must decline and reiterate your purpose of providing general information only.";
+            const apiKey = ""; // API key will be provided by the environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`API call failed with status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            const candidate = result.candidates?.[0];
+
+            if (candidate && candidate.content?.parts?.[0]?.text) {
+                return candidate.content.parts[0].text;
+            } else {
+                throw new Error("Invalid response structure from API.");
+            }
+        }
+        
+        async function callGeminiApiWithRetry(userQuery, maxRetries = 3) {
+            let attempt = 0;
+            while (attempt < maxRetries) {
+                try {
+                    return await callGeminiApi(userQuery);
+                } catch (error) {
+                    attempt++;
+                    if (attempt >= maxRetries) {
+                        throw error;
+                    }
+                    const delay = Math.pow(2, attempt) * 1000; // Exponential backoff
+                    console.log(`Retrying API call in ${delay}ms...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+
